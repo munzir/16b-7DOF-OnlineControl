@@ -1,0 +1,11 @@
+Apr 21, Saturday
+Trial 5 (with error)
+Each joint's error has been scaled correspondingly
+Joint 1 -  30
+Joint 2 - 200
+Joint 3 -  15
+Joint 4 - 100
+Joint 5 -   3
+Joint 6 -  25
+Joint 7 -   1
+

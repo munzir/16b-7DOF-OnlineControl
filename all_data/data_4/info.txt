@@ -1,0 +1,12 @@
+Apr 21, Saturday
+Trial 4 (with error)
+Trajectories generated for 2*Time period
+Each joint's error has been scaled correspondingly
+Joint 1 -  15
+Joint 2 -  15
+Joint 3 -  15
+Joint 4 -   3
+Joint 5 -   3
+Joint 6 -   3
+Joint 7 -   1
+

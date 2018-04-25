@@ -1,4 +1,4 @@
-# Install script for directory: /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl
+# Install script for directory: /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl
+CMAKE_SOURCE_DIR = /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build
+CMAKE_BINARY_DIR = /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/operationalSpaceControl.dir/depend.make
@@ -57,42 +57,18 @@ include CMakeFiles/operationalSpaceControl.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/operationalSpaceControl.dir/flags.make
 
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o: CMakeFiles/operationalSpaceControl.dir/flags.make
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o: ../MyWindow.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o -c /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/MyWindow.cpp
-
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/MyWindow.cpp > CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i
-
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/MyWindow.cpp -o CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s
-
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires:
-
-.PHONY : CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
-
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides.build
-.PHONY : CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides
-
-CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides.build: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o
-
-
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o: CMakeFiles/operationalSpaceControl.dir/flags.make
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o: ../Controller.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o -c /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Controller.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o -c /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Controller.cpp
 
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/operationalSpaceControl.dir/Controller.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Controller.cpp > CMakeFiles/operationalSpaceControl.dir/Controller.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Controller.cpp > CMakeFiles/operationalSpaceControl.dir/Controller.cpp.i
 
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/operationalSpaceControl.dir/Controller.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Controller.cpp -o CMakeFiles/operationalSpaceControl.dir/Controller.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Controller.cpp -o CMakeFiles/operationalSpaceControl.dir/Controller.cpp.s
 
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o.requires:
 
@@ -105,18 +81,42 @@ CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o.provides: CMakeFiles/ope
 CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o.provides.build: CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o
 
 
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o: CMakeFiles/operationalSpaceControl.dir/flags.make
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o: ../MyWindow.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o -c /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/MyWindow.cpp
+
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/MyWindow.cpp > CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i
+
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/MyWindow.cpp -o CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s
+
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires:
+
+.PHONY : CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
+
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
+	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides.build
+.PHONY : CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides
+
+CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.provides.build: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o
+
+
 CMakeFiles/operationalSpaceControl.dir/Main.cpp.o: CMakeFiles/operationalSpaceControl.dir/flags.make
 CMakeFiles/operationalSpaceControl.dir/Main.cpp.o: ../Main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/Main.cpp.o -c /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/operationalSpaceControl.dir/Main.cpp.o -c /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Main.cpp
 
 CMakeFiles/operationalSpaceControl.dir/Main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/operationalSpaceControl.dir/Main.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Main.cpp > CMakeFiles/operationalSpaceControl.dir/Main.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Main.cpp > CMakeFiles/operationalSpaceControl.dir/Main.cpp.i
 
 CMakeFiles/operationalSpaceControl.dir/Main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/operationalSpaceControl.dir/Main.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Main.cpp -o CMakeFiles/operationalSpaceControl.dir/Main.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Main.cpp -o CMakeFiles/operationalSpaceControl.dir/Main.cpp.s
 
 CMakeFiles/operationalSpaceControl.dir/Main.cpp.o.requires:
 
@@ -131,15 +131,15 @@ CMakeFiles/operationalSpaceControl.dir/Main.cpp.o.provides.build: CMakeFiles/ope
 
 # Object files for target operationalSpaceControl
 operationalSpaceControl_OBJECTS = \
-"CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o" \
 "CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o" \
+"CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o" \
 "CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
 
 # External object files for target operationalSpaceControl
 operationalSpaceControl_EXTERNAL_OBJECTS =
 
-operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o
 operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o
+operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o
 operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/Main.cpp.o
 operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/build.make
 operationalSpaceControl: /usr/local/lib/libdart-utils-urdf.so.6.3.0
@@ -151,8 +151,8 @@ operationalSpaceControl: /usr/lib/x86_64-linux-gnu/liburdfdom_world.so
 operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
 operationalSpaceControl: /usr/local/lib/libdart-utils.so.6.3.0
 operationalSpaceControl: /usr/local/lib/libdart.so.6.3.0
-operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libccd.so
-operationalSpaceControl: /usr/lib/libfcl.so
+operationalSpaceControl: /usr/local/lib/libccd.so
+operationalSpaceControl: /usr/local/lib/libfcl.so
 operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libassimp.so
 operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libboost_regex.so
 operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libboost_system.so
@@ -167,7 +167,7 @@ operationalSpaceControl: /usr/lib/x86_64-linux-gnu/libGL.so
 operationalSpaceControl: /usr/local/lib/libdart-external-lodepng.so.6.3.0
 operationalSpaceControl: /usr/local/lib/libdart-external-imgui.so.6.3.0
 operationalSpaceControl: CMakeFiles/operationalSpaceControl.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable operationalSpaceControl"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable operationalSpaceControl"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/operationalSpaceControl.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -175,8 +175,8 @@ CMakeFiles/operationalSpaceControl.dir/build: operationalSpaceControl
 
 .PHONY : CMakeFiles/operationalSpaceControl.dir/build
 
-CMakeFiles/operationalSpaceControl.dir/requires: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
 CMakeFiles/operationalSpaceControl.dir/requires: CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o.requires
+CMakeFiles/operationalSpaceControl.dir/requires: CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o.requires
 CMakeFiles/operationalSpaceControl.dir/requires: CMakeFiles/operationalSpaceControl.dir/Main.cpp.o.requires
 
 .PHONY : CMakeFiles/operationalSpaceControl.dir/requires
@@ -186,6 +186,6 @@ CMakeFiles/operationalSpaceControl.dir/clean:
 .PHONY : CMakeFiles/operationalSpaceControl.dir/clean
 
 CMakeFiles/operationalSpaceControl.dir/depend:
-	cd /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build /home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles/operationalSpaceControl.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles/operationalSpaceControl.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/operationalSpaceControl.dir/depend
 
