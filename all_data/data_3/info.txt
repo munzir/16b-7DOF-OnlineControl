@@ -1,0 +1,4 @@
+Apr 21, Saturday
+Trial 3 (with error)
+Error has been scaled by 5 times
+Trajectories generated for 2*Time period

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
   "CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o"
+  "CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
   "CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
   "operationalSpaceControl.pdb"
   "operationalSpaceControl"

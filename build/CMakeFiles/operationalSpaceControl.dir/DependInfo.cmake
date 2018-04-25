@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Controller.cpp" "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o"
-  "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/Main.cpp" "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
-  "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/MyWindow.cpp" "/home/panda/myfolder/wholebodycontrol/11b-7DOFKrangArmInverseDynamicsControl/build/CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
+  "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Controller.cpp" "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o"
+  "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/Main.cpp" "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles/operationalSpaceControl.dir/Main.cpp.o"
+  "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/MyWindow.cpp" "/home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

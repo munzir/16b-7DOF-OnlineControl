@@ -1,53 +1,33 @@
-/*
- * Copyright (c) 2014-2016, Humanoid Lab, Georgia Tech Research Corporation
- * Copyright (c) 2014-2017, Graphics Lab, Georgia Tech Research Corporation
- * Copyright (c) 2016-2017, Personal Robotics Lab, Carnegie Mellon University
- * All rights reserved.
- *
- * This file is provided under the following "BSD-style" License:
- *   Redistribution and use in source and binary forms, with or
- *   without modification, are permitted provided that the following
- *   conditions are met:
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- *   CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- *   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
- *   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- *   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- *   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- *   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
- *   AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- *   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- *   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *   POSSIBILITY OF SUCH DAMAGE.
- */
-
 #include "Controller.hpp"
 #include <nlopt.hpp>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+
+using namespace dart;
+using namespace std;
+
 //==============================================================================
 Controller::Controller(dart::dynamics::SkeletonPtr _robot,
                        dart::dynamics::BodyNode* _endEffector)
   : mRobot(_robot),
     mEndEffector(_endEffector)
 {
+  cout << "Controller constructor activated ... " << endl;
   assert(_robot != nullptr);
   assert(_endEffector != nullptr);
 
   int dof = mRobot->getNumDofs();
+  cout << "# DoF: " << dof << endl;
+
+  mTime = 0;
+  cout << "Current time: " << mTime << endl;
 
   mForces.setZero(dof);
+  mKp = Eigen::Matrix<double, 7, 7>::Zero();
+  mKv = Eigen::Matrix<double, 7, 7>::Zero();
 
-  mKp.setZero();
-  mKv.setZero();
-
-  for (int i = 0; i < 3; ++i)
+  for (int i = 0; i < dof; ++i)
   {
     mKp(i, i) = 750.0;
     mKv(i, i) = 250.0;
@@ -60,30 +40,56 @@ Controller::Controller(dart::dynamics::SkeletonPtr _robot,
   // Set joint damping
   for (int i = 0; i < dof; ++i)
     _robot->getJoint(i)->setDampingCoefficient(0, 0.5);
+
+  // Dump data
+  dataQ.open      ("./data/dataQ.txt");
+  dataQ       << "dataQ" << endl;
+
+  dataQref.open   ("./data/dataQref.txt");
+  dataQref    << "dataQref" << endl;
+
+  dataQdot.open   ("./data/dataQdot.txt");
+  dataQdot    << "dataQdot" << endl;
+
+  dataQdotdot.open("./data/dataQdotdot.txt");
+  dataQdotdot << "dataQdotdot" << endl;
+
+  dataTorque.open ("./data/dataTorque.txt");
+  dataTorque  << "dataTorque" << endl;
+
+  dataTime.open   ("./data/dataTime.txt");
+  dataTime    << "dataTime" << endl;
+
+  dataM.open      ("./data/dataM.txt");
+  dataM       << "dataM" << endl;
+
+  dataCg.open     ("./data/dataCg.txt");
+  dataCg      << "dataCg" << endl;
+
+  dataError.open  ("./data/dataError.txt");
+  dataError   << "dataError" << endl;
 }
 
 //==============================================================================
-Controller::~Controller()
-{
-}
+Controller::~Controller() {}
+
 //==============================================================================
 struct OptParams{
   Eigen::Matrix<double, -1, 7> P;
   Eigen::VectorXd b;
 };
 
-
-
 //==============================================================================
-void matprint(Eigen::MatrixXd A){
+void printMatrix(Eigen::MatrixXd A){
   for(int i=0; i<A.rows(); i++){
     for(int j=0; j<A.cols(); j++){
-      std::cout << A(i,j) << ", ";
+      cout << A(i,j) << ", ";
     }
-    std::cout << std::endl;
+    cout << endl;
   }
-  std::cout << std::endl;
+  cout << endl;
 }
+
 
 //==============================================================================
 double optFunc(const std::vector<double> &x, std::vector<double> &grad, void *my_func_data)
@@ -93,65 +99,166 @@ double optFunc(const std::vector<double> &x, std::vector<double> &grad, void *my
 
   if (!grad.empty()) {
     Eigen::Matrix<double, 7, 1> mGrad = optParams->P.transpose()*(optParams->P*X - optParams->b);
+    // cout << "mGrad: " << endl << mGrad << endl << endl;
     Eigen::VectorXd::Map(&grad[0], mGrad.size()) = mGrad;
   }
-  return (0.5 * pow((optParams->P*X - optParams->b).norm(), 2));
+  double normSquared = pow((optParams->P*X - optParams->b).norm(), 2);
+  // cout << "Norm sq: " << normSquared << endl << endl;
+  return (0.5 * normSquared);
+}
+
+
+//==============================================================================
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
 }
 
 //==============================================================================
-void Controller::update(const Eigen::Vector3d& _targetPosition)
-{
-  using namespace dart;
+Eigen::MatrixXd error(Eigen::VectorXd dq, const int dof) {
+  Eigen::Matrix<double, 7, 1> alpha;
+  for (int i = 0; i < dof; i++) {
+    double sign = sgn(dq(i));
+    alpha(i) =  sign * 1/( 1 + exp(-dq(i)) ) ;
+  }
+  return alpha;
+}
+
+//==============================================================================
+void Controller::update(const Eigen::Vector3d& _targetPosition) {
+  const int dof = mRobot->getNumDofs();
+  double dt = 0.001;
+
+  // Define coefficients for sinusoidal, pulsation frequency for q and dq
+  double wf = 0.558048373585;
+  Eigen::Matrix<double, 7, 4> a, b;
+  a << -0.009, -0.36, 0.311, -0.362,
+        0.095, -0.132, -0.363, 0.474,
+        -0.418, -0.25, -0.12, 0.119,
+        0.023, 0.113, 0.497, 0.213,
+        -0.23, -0.237, 0.153, -0.147,
+        0.366, 0.366, 0.302, -0.373,
+        -0.247, -0.166, 0.315, 0.031;
+
+  b <<  -0.051, 0.027, 0.003, -0.332,
+        -0.292, 0.358, -0.056, -0.436,
+        -0.355, 0.039, -0.397, -0.445,
+        0.328, 0.256, -0.36, 0.143,
+        0.428, 0.093, 0.035, -0.28,
+        -0.39, -0.085, 0.388, 0.46,
+        -0.046, 0.135, -0.428, 0.387;
+
+  Eigen::Matrix<double, 7, 1> q0;
+  q0 << 0.235, -0.004, -0.071, 0.095, -0.141, 0.208, -0.182;
+
+  // Compute joint angles & velocities using Pulsed Trajectories
+  Eigen::Matrix<double, 7, 1> qref;
+  Eigen::Matrix<double, 7, 1> dqref;
+  qref << 0, 0, 0, 0, 0, 0, 0;
+  dqref = qref;
+
+  cout << "Time: " << mTime << endl;
+  for (int joint = 0; joint < dof; joint++) {
+    for (int l = 1; l <= 4; l++) {
+      qref(joint) = qref(joint) + (a(joint, l-1)/(wf*l))*sin(wf*l*mTime)
+      - (b(joint, l-1)/(wf*l))*cos(wf*l*mTime);
+      dqref(joint) = dqref(joint) + a(joint,l-1)*cos(wf*l*mTime)
+      + b(joint, l-1)*sin(wf*l*mTime);
+    }
+  }
+  qref = qref + q0;
+  // cout << "Angles: " << endl << qref << endl << endl;
+  // cout << "Velocities: " << endl << dqref << endl << endl;
+
+  mTime += dt;
 
   // Get the stuff that we need
-  Eigen::Vector3d x    = mEndEffector->getTransform().translation();
-  Eigen::Vector3d dx   = mEndEffector->getLinearVelocity();
-  Eigen::MatrixXd M = mRobot->getMassMatrix();                   // n x n
-  Eigen::VectorXd Cg   = mRobot->getCoriolisAndGravityForces();        // n x 1
-  math::LinearJacobian Jv   = mEndEffector->getLinearJacobian();       // 3 x n
-  math::LinearJacobian dJv  = mEndEffector->getLinearJacobianDeriv();  // 3 x n
-  Eigen::VectorXd dq        = mRobot->getVelocities();                 // n x 1
+  Eigen::MatrixXd  M    = mRobot->getMassMatrix();                // n x n
+  Eigen::VectorXd Cg    = mRobot->getCoriolisAndGravityForces();  // n x 1
+  Eigen::VectorXd  q    = mRobot->getPositions();                 // n x 1
+  Eigen::VectorXd dq    = mRobot->getVelocities();                // n x 1
+  Eigen::VectorXd ddq   = mRobot->getAccelerations();             // n x 1
+  Eigen::VectorXd ddqref = -mKp*(q - qref) - mKv*(dq - dqref);    // n x 1
 
   // Optimizer stuff
   nlopt::opt opt(nlopt::LD_MMA, 7);
   OptParams optParams;
-  std::vector<double> ddq_vec(7);
+  std::vector<double> ddqref_vec(7);
   double minf;
+  // cout << "Initialized optimizer variables ... " << endl << endl;
 
-  // ddxref
-  Eigen::Vector3d ddxref = -mKp*(x - _targetPosition) - mKv*dx;
+  // Perform optimization to find joint accelerations
+  Eigen::Matrix<double, 7, 7> I7 = Eigen::Matrix<double, 7, 7>::Identity();
 
-  // Perform optimization to find joint accelerations 
-  optParams.P = Jv;
-  optParams.b = -(dJv*dq - ddxref);
+  // cout << "Passing optimizing parameters ... ";
+  optParams.P = I7;
+  optParams.b = ddqref;
+  // cout << "Success !" << endl << endl;
+
   opt.set_min_objective(optFunc, &optParams);
   opt.set_xtol_rel(1e-4);
   opt.set_maxtime(0.005);
-  opt.optimize(ddq_vec, minf);
-  Eigen::Matrix<double, 7, 1> ddq(ddq_vec.data()); 
-  
+  opt.optimize(ddqref_vec, minf);
+  Eigen::Matrix<double, 7, 1> ddqRef(ddqref_vec.data());
 
   //torques
-  mForces = M*ddq + Cg;
+  mForces = M*ddqRef + Cg;
+  // cout << "Torque (before):" << endl << mForces << endl << endl;
+  Eigen::Matrix<double, 7, 7> errCoeff = Eigen::Matrix<double, 7, 7>::Identity();
+  errCoeff(0,0) = 30.0;
+  errCoeff(1,1) = 200.0;
+  errCoeff(2,2) = 15.0;
+  errCoeff(3,3) = 100.0;
+  errCoeff(4,4) =  3.0;
+  errCoeff(5,5) = 25.0;
+  errCoeff(6,6) =  1.0;
+
+  // cout << "Torque (before):" << endl << mForces << endl << endl;
+  Eigen::VectorXd mForceErr = mForces + errCoeff*error(dq, dof);
+  // cout << "Error:"  << endl << errCoeff*error(dq, dof) << endl << endl;
+  // cout << "Torque (after):" << endl << mForceErr << endl << endl;
 
   // Apply the joint space forces to the robot
-  mRobot->setForces(mForces);
+  mRobot->setForces(mForceErr);
+
+  //    1. State q
+  dataQ       << q.transpose() << endl;
+  dataQref    << qref.transpose() << endl;
+  dataQdot    << dq.transpose() << endl;
+  dataQdotdot << ddq.transpose() << endl;
+  dataTorque  << mForces.transpose() << endl;
+  dataTime    << mTime << endl;
+  dataM       << M << endl;
+  dataCg      << Cg.transpose() << endl;
+  dataError   << (errCoeff*error(dq, dof)).transpose() << endl;
+
+  // Closing operation
+  double T = 2*3.1416/wf;
+  if (mTime >= 2*T ) {
+    cout << "Time period met. Stopping data recording ...";
+    dataQ.close();
+    dataQref.close();
+    dataQdot.close();
+    dataQdotdot.close();
+    dataTorque.close();
+    dataTime.close();
+    dataM.close();
+    dataCg.close();
+    dataError.close();
+    cout << "File handles closed!" << endl << endl << endl;
+    exit (EXIT_FAILURE);
+  }
 }
 
 //==============================================================================
-dart::dynamics::SkeletonPtr Controller::getRobot() const
-{
+dart::dynamics::SkeletonPtr Controller::getRobot() const {
   return mRobot;
 }
 
 //==============================================================================
-dart::dynamics::BodyNode* Controller::getEndEffector() const
-{
+dart::dynamics::BodyNode* Controller::getEndEffector() const {
   return mEndEffector;
 }
 
 //==============================================================================
-void Controller::keyboard(unsigned char /*_key*/, int /*_x*/, int /*_y*/)
-{
+void Controller::keyboard(unsigned char /*_key*/, int /*_x*/, int /*_y*/) {
 }
-
