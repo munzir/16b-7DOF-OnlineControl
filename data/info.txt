@@ -1,5 +1,5 @@
-Apr 23 Monday
-Trial 7 (with error)
+Apr 29 Sunday
+Trial 8 (with error)
 Each joint's error has been scaled correspondingly
 Joint 1 -  30
 Joint 2 - 200
@@ -10,4 +10,6 @@ Joint 6 -  25
 Joint 7 -   1
 
 Run for twice the time period
-Additionally, including ddq, M, Cg, and Error data
+
+Saving q, qref with GP-based predicted torque
+Using random URDF to get reference trajectories
