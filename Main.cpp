@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
   window.setWorld(world);
 
   glutInit(&argc, argv);
-  window.initWindow(1280, 960, "Forward Simulation");
+  window.initWindow(640, 480, "Forward Simulation");
   glutMainLoop();
 
   return 0;

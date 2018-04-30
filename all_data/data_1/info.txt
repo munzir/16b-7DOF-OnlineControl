@@ -1,4 +1,0 @@
-Apr 21, Saturday
-Trial 1 (with error)
-No scaling done for error
-Trajectories generated for 2*Time period

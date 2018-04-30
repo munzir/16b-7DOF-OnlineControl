@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm
+CMAKE_SOURCE_DIR = /home/mouhyemen/desktop/research/KrangDart/OnlineControl
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build
+CMAKE_BINARY_DIR = /home/mouhyemen/desktop/research/KrangDart/OnlineControl/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles /home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mouhyemen/desktop/research/KrangDart/TrajectorySingleArm/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named operationalSpaceControl
+# Target rules for targets named onlineControl
 
 # Build rule for target.
-operationalSpaceControl: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 operationalSpaceControl
-.PHONY : operationalSpaceControl
+onlineControl: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 onlineControl
+.PHONY : onlineControl
 
 # fast build rule for target.
-operationalSpaceControl/fast:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/build
-.PHONY : operationalSpaceControl/fast
+onlineControl/fast:
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/build
+.PHONY : onlineControl/fast
 
 Controller.o: Controller.cpp.o
 
@@ -129,7 +129,7 @@ Controller.o: Controller.cpp.o
 
 # target to build an object file
 Controller.cpp.o:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Controller.cpp.o
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Controller.cpp.o
 .PHONY : Controller.cpp.o
 
 Controller.i: Controller.cpp.i
@@ -138,7 +138,7 @@ Controller.i: Controller.cpp.i
 
 # target to preprocess a source file
 Controller.cpp.i:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Controller.cpp.i
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Controller.cpp.i
 .PHONY : Controller.cpp.i
 
 Controller.s: Controller.cpp.s
@@ -147,7 +147,7 @@ Controller.s: Controller.cpp.s
 
 # target to generate assembly for a file
 Controller.cpp.s:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Controller.cpp.s
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Controller.cpp.s
 .PHONY : Controller.cpp.s
 
 Main.o: Main.cpp.o
@@ -156,7 +156,7 @@ Main.o: Main.cpp.o
 
 # target to build an object file
 Main.cpp.o:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Main.cpp.o
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Main.cpp.o
 .PHONY : Main.cpp.o
 
 Main.i: Main.cpp.i
@@ -165,7 +165,7 @@ Main.i: Main.cpp.i
 
 # target to preprocess a source file
 Main.cpp.i:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Main.cpp.i
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Main.cpp.i
 .PHONY : Main.cpp.i
 
 Main.s: Main.cpp.s
@@ -174,7 +174,7 @@ Main.s: Main.cpp.s
 
 # target to generate assembly for a file
 Main.cpp.s:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/Main.cpp.s
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/Main.cpp.s
 .PHONY : Main.cpp.s
 
 MyWindow.o: MyWindow.cpp.o
@@ -183,7 +183,7 @@ MyWindow.o: MyWindow.cpp.o
 
 # target to build an object file
 MyWindow.cpp.o:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.o
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/MyWindow.cpp.o
 .PHONY : MyWindow.cpp.o
 
 MyWindow.i: MyWindow.cpp.i
@@ -192,7 +192,7 @@ MyWindow.i: MyWindow.cpp.i
 
 # target to preprocess a source file
 MyWindow.cpp.i:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.i
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/MyWindow.cpp.i
 .PHONY : MyWindow.cpp.i
 
 MyWindow.s: MyWindow.cpp.s
@@ -201,7 +201,7 @@ MyWindow.s: MyWindow.cpp.s
 
 # target to generate assembly for a file
 MyWindow.cpp.s:
-	$(MAKE) -f CMakeFiles/operationalSpaceControl.dir/build.make CMakeFiles/operationalSpaceControl.dir/MyWindow.cpp.s
+	$(MAKE) -f CMakeFiles/onlineControl.dir/build.make CMakeFiles/onlineControl.dir/MyWindow.cpp.s
 .PHONY : MyWindow.cpp.s
 
 # Help Target
@@ -212,7 +212,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... operationalSpaceControl"
+	@echo "... onlineControl"
 	@echo "... Controller.o"
 	@echo "... Controller.i"
 	@echo "... Controller.s"
