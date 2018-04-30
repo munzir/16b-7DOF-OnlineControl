@@ -62,6 +62,8 @@ private:
   double wf;
   Eigen::Matrix<double, DOF, 1> qref;
   Eigen::Matrix<double, DOF, 1> dqref;
+  Eigen::Matrix<double, DOF, 1> q0;
+  Eigen::Matrix<double, DOF, 4> a, b;
 
   /// \brief Robot
   dart::dynamics::SkeletonPtr mRobot;
@@ -71,6 +73,7 @@ private:
 
   /// \brief Control forces
   Eigen::VectorXd mForces;
+  Eigen::VectorXd mTauPred;
 
   /// \brief Proportional gain for the virtual spring forces at the end effector
   Eigen::Matrix<double,DOF,DOF> mKp;
