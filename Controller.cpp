@@ -6,131 +6,145 @@
 
 using namespace dart;
 using namespace std;
+#define SAMPLES 500
+#define DOF 7
 
+//131720 is the stack limit - 784
 //==============================================================================
 Controller::Controller(dart::dynamics::SkeletonPtr _robot,
                        dart::dynamics::BodyNode* _endEffector)
   : mRobot(_robot),
     mEndEffector(_endEffector)
 {
-  cout << "Controller constructor activated ... " << endl;
+  cout << endl << "============= Controller constructor activated =============" << endl << endl;
   assert(_robot != nullptr);
   assert(_endEffector != nullptr);
 
-  int dof = mRobot->getNumDofs();
-  cout << "# DoF: " << dof << endl;
+  cout << "Getting total degrees of freedom ";
+  const int dof = mRobot->getNumDofs();
+  cout << "| DOF = " << dof << endl;
 
+  if (dof != DOF) {
+    cout << "DOF do not match with defined constant ... exiting program!" << endl;
+    exit (EXIT_FAILURE);
+  }
+
+  cout << "Initializing time ==> ";
   mTime = 0;
-  cout << "Current time: " << mTime << endl;
+  cout << "t(0) = " << mTime << endl;
 
-  mForces.setZero(dof);
-  mKp = Eigen::Matrix<double, 7, 7>::Zero();
-  mKv = Eigen::Matrix<double, 7, 7>::Zero();
+  mForces.setZero(DOF);
+  mKp = Eigen::Matrix<double, DOF, DOF>::Zero();
+  mKv = Eigen::Matrix<double, DOF, DOF>::Zero();
 
-  for (int i = 0; i < dof; ++i)
-  {
+  for (int i = 0; i < DOF; ++i) {
     mKp(i, i) = 750.0;
     mKv(i, i) = 250.0;
   }
 
   // Remove position limits
-  for (int i = 0; i < dof; ++i)
+  for (int i = 0; i < DOF; ++i)
     _robot->getJoint(i)->setPositionLimitEnforced(false);
 
   // Set joint damping
-  for (int i = 0; i < dof; ++i)
+  for (int i = 0; i < DOF; ++i)
     _robot->getJoint(i)->setDampingCoefficient(0, 0.5);
 
-  // Dump data
-  dataQ.open      ("./data/dataQ.txt");
-  dataQ       << "dataQ" << endl;
+  // // Dump data
+  // dataQ.open      ("./data/dataQ.txt");
+  // dataQ       << "dataQ" << endl;
+  //
+  // dataQref.open   ("./data/dataQref.txt");
+  // dataQref    << "dataQref" << endl;
+  //
+  // dataQdot.open   ("./data/dataQdot.txt");
+  // dataQdot    << "dataQdot" << endl;
+  //
+  // dataQdotdot.open("./data/dataQdotdot.txt");
+  // dataQdotdot << "dataQdotdot" << endl;
+  //
+  // dataTorque.open ("./data/dataTorque.txt");
+  // dataTorque  << "dataTorque" << endl;
+  //
+  // dataTime.open   ("./data/dataTime.txt");
+  // dataTime    << "dataTime" << endl;
+  //
+  // dataM.open      ("./data/dataM.txt");
+  // dataM       << "dataM" << endl;
+  //
+  // dataCg.open     ("./data/dataCg.txt");
+  // dataCg      << "dataCg" << endl;
+  //
+  // dataError.open  ("./data/dataError.txt");
+  // dataError   << "dataError" << endl;
 
-  dataQref.open   ("./data/dataQref.txt");
-  dataQref    << "dataQref" << endl;
+  // Read q, dq, ddq from text files
+  readAlpha.open  ("./data/alpha.txt");
+  readQ.open      ("./data/dataQ.txt");
+  readQdot.open   ("./data/dataQdot.txt");
+  readQdotdot.open("./data/dataQdotdot.txt");
 
-  dataQdot.open   ("./data/dataQdot.txt");
-  dataQdot    << "dataQdot" << endl;
+  Eigen::MatrixXd xpQ   (1, DOF);
+  Eigen::MatrixXd xpdQ  (1, DOF);
+  Eigen::MatrixXd xpddQ (1, DOF);
+  string s;
 
-  dataQdotdot.open("./data/dataQdotdot.txt");
-  dataQdotdot << "dataQdotdot" << endl;
+  for (int i = 0; i < 1; i++) {
+    getline(readQ,s);
+    getline(readQdot,s);
+    getline(readQdotdot,s);
+  }
 
-  dataTorque.open ("./data/dataTorque.txt");
-  dataTorque  << "dataTorque" << endl;
+  cout << " -------------- " << endl;
+  cout << "Reading states [q, dq, ddq] from text files | ";
+  if (readQ.is_open()) {
+      for (int row = 0; row < SAMPLES; row++) {
 
-  dataTime.open   ("./data/dataTime.txt");
-  dataTime    << "dataTime" << endl;
+          for (int col = 0; col < DOF; col++) {
+              float qVal = 0.0;
+              float dqVal = 0.0;
+              float ddqVal = 0.0;
 
-  dataM.open      ("./data/dataM.txt");
-  dataM       << "dataM" << endl;
+              readQ >> qVal;
+              readQdot >> dqVal;
+              readQdotdot >> ddqVal;
 
-  dataCg.open     ("./data/dataCg.txt");
-  dataCg      << "dataCg" << endl;
+              xpQ(0, col) = qVal;
+              xpdQ(0, col) = dqVal;
+              xpddQ(0, col) = ddqVal;
+          }
+          xp.row(row) << xpQ, xpdQ, xpddQ;
+      }
+      readQ.close();
+      readQdot.close();
+      readQdotdot.close();
+      cout <<"xp size: " << xp.rows() <<"x"<<   xp.cols()   << endl;
+  }
+  cout << "Operation completed!" << endl;
 
-  dataError.open  ("./data/dataError.txt");
-  dataError   << "dataError" << endl;
-}
-
-//==============================================================================
-Controller::~Controller() {}
-
-//==============================================================================
-struct OptParams{
-  Eigen::Matrix<double, -1, 7> P;
-  Eigen::VectorXd b;
-};
-
-//==============================================================================
-void printMatrix(Eigen::MatrixXd A){
-  for(int i=0; i<A.rows(); i++){
-    for(int j=0; j<A.cols(); j++){
-      cout << A(i,j) << ", ";
+  cout << " -------------- " << endl;
+  cout << "Reading matrix alphak from text file | ";
+  if (readAlpha.is_open()) {
+    for (int row = 0; row < SAMPLES; row++) {
+        for (int col = 0; col < DOF; col++) {
+            float value = 0.0;
+            readAlpha >> value;
+            alpha(row, col) = value;
+        }
     }
-    cout << endl;
+    readAlpha.close();
+    cout <<"alpha size: " << alpha.rows() <<"x"<<   alpha.cols()   << endl;
   }
-  cout << endl;
-}
+  cout << "Operation completed!" << endl;
 
 
-//==============================================================================
-double optFunc(const std::vector<double> &x, std::vector<double> &grad, void *my_func_data)
-{
-  OptParams* optParams = reinterpret_cast<OptParams *>(my_func_data);
-  Eigen::Matrix<double, 7, 1> X(x.data());
-
-  if (!grad.empty()) {
-    Eigen::Matrix<double, 7, 1> mGrad = optParams->P.transpose()*(optParams->P*X - optParams->b);
-    // cout << "mGrad: " << endl << mGrad << endl << endl;
-    Eigen::VectorXd::Map(&grad[0], mGrad.size()) = mGrad;
-  }
-  double normSquared = pow((optParams->P*X - optParams->b).norm(), 2);
-  // cout << "Norm sq: " << normSquared << endl << endl;
-  return (0.5 * normSquared);
-}
-
-
-//==============================================================================
-template <typename T> int sgn(T val) {
-    return (T(0) < val) - (val < T(0));
-}
-
-//==============================================================================
-Eigen::MatrixXd error(Eigen::VectorXd dq, const int dof) {
-  Eigen::Matrix<double, 7, 1> alpha;
-  for (int i = 0; i < dof; i++) {
-    double sign = sgn(dq(i));
-    alpha(i) =  sign * 1/( 1 + exp(-dq(i)) ) ;
-  }
-  return alpha;
-}
-
-//==============================================================================
-void Controller::update(const Eigen::Vector3d& _targetPosition) {
-  const int dof = mRobot->getNumDofs();
-  double dt = 0.001;
+  cout << " -------------- " << endl;
+  cout << "Generating optical trajectories ====> ";
 
   // Define coefficients for sinusoidal, pulsation frequency for q and dq
-  double wf = 0.558048373585;
-  Eigen::Matrix<double, 7, 4> a, b;
+  dt = 0.001;
+  wf = 0.558048373585;
+  Eigen::Matrix<double, DOF, 4> a, b;
   a << -0.009, -0.36, 0.311, -0.362,
         0.095, -0.132, -0.363, 0.474,
         -0.418, -0.25, -0.12, 0.119,
@@ -147,17 +161,17 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
         -0.39, -0.085, 0.388, 0.46,
         -0.046, 0.135, -0.428, 0.387;
 
-  Eigen::Matrix<double, 7, 1> q0;
+  Eigen::MatrixXd q0(DOF, 1);
   q0 << 0.235, -0.004, -0.071, 0.095, -0.141, 0.208, -0.182;
 
   // Compute joint angles & velocities using Pulsed Trajectories
-  Eigen::Matrix<double, 7, 1> qref;
-  Eigen::Matrix<double, 7, 1> dqref;
+  // Eigen::MatrixXd qref(DOF, 1);
+  // Eigen::MatrixXd dqref(DOF, 1);
   qref << 0, 0, 0, 0, 0, 0, 0;
   dqref = qref;
 
-  cout << "Time: " << mTime << endl;
-  for (int joint = 0; joint < dof; joint++) {
+  // cout << "Time: " << mTime << endl;
+  for (int joint = 0; joint < DOF; joint++) {
     for (int l = 1; l <= 4; l++) {
       qref(joint) = qref(joint) + (a(joint, l-1)/(wf*l))*sin(wf*l*mTime)
       - (b(joint, l-1)/(wf*l))*cos(wf*l*mTime);
@@ -168,6 +182,84 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
   qref = qref + q0;
   // cout << "Angles: " << endl << qref << endl << endl;
   // cout << "Velocities: " << endl << dqref << endl << endl;
+  cout << "Trajectory generation successful!" << endl << endl;
+
+
+  cout << endl << "============= Controller constructor successful ============" << endl << endl;
+}
+
+//==============================================================================
+Controller::~Controller() {}
+
+//==============================================================================
+struct OptParams{
+  Eigen::Matrix<double, -1, DOF> P;
+  Eigen::VectorXd b;
+};
+
+//==============================================================================
+void printMatrix(Eigen::MatrixXd A){
+  for(int i=0; i<A.rows(); i++){
+    for(int j=0; j<A.cols(); j++){
+      cout << A(i,j) << ", ";
+    }
+    cout << endl;
+  }
+  cout << endl;
+}
+
+
+//==============================================================================
+double optFunc(const std::vector<double> &x, std::vector<double> &grad, void *my_func_data) {
+  OptParams* optParams = reinterpret_cast<OptParams *>(my_func_data);
+  Eigen::Matrix<double, DOF, 1> X(x.data());
+
+  if (!grad.empty()) {
+    Eigen::Matrix<double, DOF, 1> mGrad = optParams->P.transpose()*(optParams->P*X - optParams->b);
+    // cout << "mGrad: " << endl << mGrad << endl << endl;
+    Eigen::VectorXd::Map(&grad[0], mGrad.size()) = mGrad;
+  }
+  double normSquared = pow((optParams->P*X - optParams->b).norm(), 2);
+  // cout << "Norm sq: " << normSquared << endl << endl;
+  return (0.5 * normSquared);
+}
+
+
+//==============================================================================
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
+//==============================================================================
+Eigen::MatrixXd error(Eigen::VectorXd dq, const int dof) {
+  Eigen::MatrixXd err(DOF,1);
+  for (int i = 0; i < dof; i++) {
+    double sign = sgn(dq(i));
+    err(i) =  sign * 1/( 1 + exp(-dq(i)) ) ;
+  }
+  return err;
+}
+
+
+//==============================================================================
+//=========== WRAPPER FUNCTIONS FOR COMPUTING TORQUE ==========================
+Eigen::MatrixXd getQueryKernel(Eigen::MatrixXd xp, Eigen::MatrixXd xq,
+  const int N, const double theta1, const double theta2) {
+  // xp - matrix of dimension Nx21
+  // xq - vector of dimension 1x21
+
+  Eigen::Matrix<double, SAMPLES, 1> k;
+  for (int i = 0; i < N; i++) {
+    Eigen::MatrixXd diff = xp.row(i) - xq;
+    double diffNorm = diff.norm();
+    k.row(i) << theta1*exp( -pow(diffNorm, 2)/ pow(theta2, 2) );
+  }
+  return k;
+}
+
+//==============================================================================
+void Controller::update(const Eigen::Vector3d& _targetPosition) {
+  // const int dof = mRobot->getNumDofs();
 
   mTime += dt;
 
@@ -179,15 +271,16 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
   Eigen::VectorXd ddq   = mRobot->getAccelerations();             // n x 1
   Eigen::VectorXd ddqref = -mKp*(q - qref) - mKv*(dq - dqref);    // n x 1
 
+
   // Optimizer stuff
-  nlopt::opt opt(nlopt::LD_MMA, 7);
+  nlopt::opt opt(nlopt::LD_MMA, DOF);
   OptParams optParams;
-  std::vector<double> ddqref_vec(7);
+  std::vector<double> ddqref_vec(DOF);
   double minf;
   // cout << "Initialized optimizer variables ... " << endl << endl;
 
   // Perform optimization to find joint accelerations
-  Eigen::Matrix<double, 7, 7> I7 = Eigen::Matrix<double, 7, 7>::Identity();
+  Eigen::Matrix<double, DOF, DOF> I7 = Eigen::Matrix<double, DOF, DOF>::Identity();
 
   // cout << "Passing optimizing parameters ... ";
   optParams.P = I7;
@@ -198,53 +291,67 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
   opt.set_xtol_rel(1e-4);
   opt.set_maxtime(0.005);
   opt.optimize(ddqref_vec, minf);
-  Eigen::Matrix<double, 7, 1> ddqRef(ddqref_vec.data());
+  Eigen::Matrix<double, DOF, 1> ddqRef(ddqref_vec.data());
+
+
+  // Computing predicted torque
+  const double theta1 = 6.5;
+  const double theta2 = 1.2;
+  Eigen::Matrix<double, 1, DOF*3> xq;
+
+  // xp << q, dq, ddq;
+  xq << q.transpose(), dq.transpose(), ddq.transpose();
+
+  Eigen::Matrix<double, SAMPLES, 1> k = getQueryKernel(xp, xq, SAMPLES, theta1, theta2);
+  // cout <<"k size: " << k.rows() <<"x"<<   k.cols()   << endl;
+  // cout <<"k: " << k << endl << endl;
 
   //torques
   mForces = M*ddqRef + Cg;
   // cout << "Torque (before):" << endl << mForces << endl << endl;
-  Eigen::Matrix<double, 7, 7> errCoeff = Eigen::Matrix<double, 7, 7>::Identity();
-  errCoeff(0,0) = 30.0;
+  Eigen::Matrix<double, DOF, DOF> errCoeff = Eigen::Matrix<double, DOF, DOF>::Identity();
+  errCoeff(0,0) =  30.0;
   errCoeff(1,1) = 200.0;
-  errCoeff(2,2) = 15.0;
+  errCoeff(2,2) =  15.0;
   errCoeff(3,3) = 100.0;
-  errCoeff(4,4) =  3.0;
-  errCoeff(5,5) = 25.0;
-  errCoeff(6,6) =  1.0;
+  errCoeff(4,4) =   3.0;
+  errCoeff(5,5) =  25.0;
+  errCoeff(6,6) =   1.0;
 
   // cout << "Torque (before):" << endl << mForces << endl << endl;
-  Eigen::VectorXd mForceErr = mForces + errCoeff*error(dq, dof);
-  // cout << "Error:"  << endl << errCoeff*error(dq, dof) << endl << endl;
+  Eigen::VectorXd mForceErr = mForces + errCoeff*error(dq, DOF);
+  // cout << "Error:"  << endl << errCoeff*error(dq, DOF) << endl << endl;
   // cout << "Torque (after):" << endl << mForceErr << endl << endl;
 
   // Apply the joint space forces to the robot
   mRobot->setForces(mForceErr);
 
-  //    1. State q
-  dataQ       << q.transpose() << endl;
-  dataQref    << qref.transpose() << endl;
-  dataQdot    << dq.transpose() << endl;
-  dataQdotdot << ddq.transpose() << endl;
-  dataTorque  << mForces.transpose() << endl;
-  dataTime    << mTime << endl;
-  dataM       << M << endl;
-  dataCg      << Cg.transpose() << endl;
-  dataError   << (errCoeff*error(dq, dof)).transpose() << endl;
+  // dataQ       << q.transpose() << endl;
+  // dataQref    << qref.transpose() << endl;
+  // dataQdot    << dq.transpose() << endl;
+  // dataQdotdot << ddq.transpose() << endl;
+  // dataTorque  << mForces.transpose() << endl;
+  // dataTime    << mTime << endl;
+  // dataM       << M << endl;
+  // dataCg      << Cg.transpose() << endl;
+  // dataError   << (errCoeff*error(dq, DOF)).transpose() << endl;
 
   // Closing operation
   double T = 2*3.1416/wf;
-  if (mTime >= 2*T ) {
-    cout << "Time period met. Stopping data recording ...";
-    dataQ.close();
-    dataQref.close();
-    dataQdot.close();
-    dataQdotdot.close();
-    dataTorque.close();
-    dataTime.close();
-    dataM.close();
-    dataCg.close();
-    dataError.close();
-    cout << "File handles closed!" << endl << endl << endl;
+
+  if (mTime >= 1*T ) {
+    cout << "Time period met. Closing simulation ...";
+    // cout << "Time period met. Stopping data recording ...";
+    // dataQ.close();
+    // dataQref.close();
+    // dataQdot.close();
+    // dataQdotdot.close();
+    // dataTorque.close();
+    // dataTime.close();
+    // dataM.close();
+    // dataCg.close();
+    // dataError.close();
+    // cout << "File handles closed!" << endl << endl << endl;
     exit (EXIT_FAILURE);
   }
 }
