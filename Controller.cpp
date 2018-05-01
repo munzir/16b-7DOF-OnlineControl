@@ -6,8 +6,9 @@
 
 using namespace dart;
 using namespace std;
-#define SAMPLES 500
+#define SAMPLES 2000
 #define DOF 7
+Eigen::Matrix<double, DOF*3, DOF*3> I_21 = Eigen::Matrix<double, DOF*3, DOF*3>::Identity();
 
 //131720 is the stack limit - 784
 //==============================================================================
@@ -51,14 +52,14 @@ Controller::Controller(dart::dynamics::SkeletonPtr _robot,
     _robot->getJoint(i)->setDampingCoefficient(0, 0.5);
 
   // // Dump data
-  dataTime.open   ("./data/dataTime.txt");
-  dataTime    << "dataTime" << endl;
+  onlineDataTime.open   ("./data/onlineDataTime.txt");
+  onlineDataTime    << "onlineDataTime" << endl;
 
-  dataQ.open      ("./data/dataQ.txt");
-  dataQ       << "dataQ" << endl;
-  //
-  dataQref.open   ("./data/dataQref.txt");
-  dataQref    << "dataQref" << endl;
+  onlineDataQ.open      ("./data/onlineDataQ.txt");
+  onlineDataQ       << "onlineDataQ" << endl;
+
+  onlineDataQref.open   ("./data/onlineDataQref.txt");
+  onlineDataQref    << "onlineDataQref" << endl;
   //
   // dataQdot.open   ("./data/dataQdot.txt");
   // dataQdot    << "dataQdot" << endl;
@@ -79,7 +80,7 @@ Controller::Controller(dart::dynamics::SkeletonPtr _robot,
   // dataError   << "dataError" << endl;
 
   // Read q, dq, ddq from text files
-  readAlpha.open  ("./data/alpha.txt");
+  readAlpha.open  ("./data/alpha2000.txt");
   readQ.open      ("./data/dataQ.txt");
   readQdot.open   ("./data/dataQdot.txt");
   readQdotdot.open("./data/dataQdotdot.txt");
@@ -246,17 +247,33 @@ Eigen::MatrixXd error(Eigen::VectorXd dq, const int dof) {
 //==============================================================================
 //=========== WRAPPER FUNCTIONS FOR COMPUTING TORQUE ==========================
 Eigen::MatrixXd getQueryKernel(Eigen::MatrixXd xp, Eigen::MatrixXd xq,
-  const int N, const double theta1, const double theta2) {
+  const int N, const double charLength, const double coeff) {
   // xp - matrix of dimension Nx21
   // xq - vector of dimension 1x21
+
+  double expCoeff  = exp(coeff);
+  double expLength = exp(charLength);
 
   Eigen::Matrix<double, SAMPLES, 1> k;
   for (int i = 0; i < N; i++) {
     Eigen::MatrixXd diff = xp.row(i) - xq;
     double diffNorm = diff.norm();
-    k.row(i) << theta1*exp( -pow(diffNorm, 2)/ pow(theta2, 2) );
+    k.row(i) << (expCoeff*expCoeff)*exp( -pow(diffNorm, 2)/ pow(expLength, 2) );
   }
   return k;
+
+  // double expLength = exp(charLength);
+  // double expCoeff  = exp(coeff);
+  //
+  // Eigen::Matrix<double, SAMPLES, 1> k;
+  // for (int i = 0; i < N; i++) {
+  //   Eigen::MatrixXd diff = xp.row(i) - xq;
+  //   Eigen::MatrixXd dist = (1/(expLength*expLength))* diff*I_21*diff.transpose();
+  //   double distance = dist(0,0);
+  //   k.row(i) << expCoeff*expCoeff*exp( -0.5*distance );
+  // }
+  // return k;
+
 }
 
 //==============================================================================
@@ -312,14 +329,14 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
 
 
   // Computing predicted torque
-  const double theta1 = 7.3422;
-  const double theta2 = 11.8002;
+  const double charLength = 2.0241;     //7.3422;
+  const double coeff      = 4.1593;     //11.8002;
   Eigen::Matrix<double, 1, DOF*3> xq;
 
   // xp << q, dq, ddq;
   xq << q.transpose(), dq.transpose(), ddq.transpose();
 
-  Eigen::Matrix<double, SAMPLES, 1> k = getQueryKernel(xp, xq, SAMPLES, theta1, theta2);
+  Eigen::Matrix<double, SAMPLES, 1> k = getQueryKernel(xp, xq, SAMPLES, charLength, coeff);
   // cout <<"k size: " << k.rows() <<"x"<<   k.cols()   << endl;
   // cout <<"k: " << k << endl << endl;
 
@@ -330,27 +347,27 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
 
 
   Eigen::Matrix<double, DOF, DOF> errCoeff = Eigen::Matrix<double, DOF, DOF>::Identity();
-    errCoeff(0,0) =  30.0;
-    errCoeff(1,1) = 200.0;
-    errCoeff(2,2) =  15.0;
-    errCoeff(3,3) = 100.0;
-    errCoeff(4,4) =   3.0;
-    errCoeff(5,5) =  25.0;
-    errCoeff(6,6) =   1.0;
+  errCoeff(0,0) =  30.0;
+  errCoeff(1,1) =  10.0;
+  errCoeff(2,2) =   5.0;
+  errCoeff(3,3) =   5.0;
+  errCoeff(4,4) =   3.0;
+  errCoeff(5,5) =   5.0;
+  errCoeff(6,6) =   1.0;
   // Eigen::VectorXd mForceErr = mForces + errCoeff*error(dq, DOF);
   Eigen::VectorXd mForceErr = mTauPred + errCoeff*error(dq, DOF);
 
 
-  double diff = (mForceErr - mTauPred).norm();
-  cout << "Norm error: " << diff << endl;
+  // double diff = (mForceErr - mTauPred).norm();
+  // cout << "Norm error: " << diff << endl;
 
 
   // Apply the joint space forces to the robot
   mRobot->setForces(mForceErr);
 
-  dataTime    << mTime << endl;
-  dataQ       << q.transpose() << endl;
-  dataQref    << qref.transpose() << endl;
+  onlineDataTime    << mTime << endl;
+  onlineDataQ       << q.transpose() << endl;
+  onlineDataQref    << qref.transpose() << endl;
   // dataQdot    << dq.transpose() << endl;
   // dataQdotdot << ddq.transpose() << endl;
   // dataTorque  << mForces.transpose() << endl;
@@ -363,9 +380,9 @@ void Controller::update(const Eigen::Vector3d& _targetPosition) {
   if (mTime >= 2*T ) {
     // cout << "Time period met. Closing simulation ..." << endl;
     cout << "Time period met. Stopping data recording ...";
-    dataTime.close();
-    dataQ.close();
-    dataQref.close();
+    onlineDataTime.close();
+    onlineDataQ.close();
+    onlineDataQref.close();
     // dataQdot.close();
     // dataQdotdot.close();
     // dataTorque.close();

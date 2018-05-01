@@ -6,7 +6,7 @@
 #include <iostream>
 #include <dart/dart.hpp>
 using namespace std;
-#define SAMPLES 500
+#define SAMPLES 2000
 #define DOF 7
 #define DOF3 21
 
@@ -36,23 +36,17 @@ public:
   virtual void keyboard(unsigned char _key, int _x, int _y);
 
 private:
-  /// File handles for dumping data
-  ofstream dataQ;
-  ofstream dataQref;
-  ofstream dataQdot;
-  ofstream dataQdotdot;
-  ofstream dataTorque;
-  ofstream dataTime;
-  ofstream dataM;
-  ofstream dataCg;
-  ofstream dataError;
+  /// File handles for dumping online-data and reading offline data
+  ofstream onlineDataTime;
+  ofstream onlineDataQ;
+  ofstream onlineDataQref;
 
   ifstream readAlpha;
   ifstream readQ;
   ifstream readQdot;
   ifstream readQdotdot;
 
-  const int LINES = 1005;
+  const int LINES = 1006;
   Eigen::Matrix<double, SAMPLES, DOF3> xp;
   Eigen::Matrix<double, SAMPLES, DOF> alpha;
 
