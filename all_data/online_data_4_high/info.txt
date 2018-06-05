@@ -1,0 +1,5 @@
+Apr 30 Monday
+Online Control 2
+Using coefficients from random URDF for generating testing trajectories
+
+Run for "2" times the time period
