@@ -1,3 +1,10 @@
-#exclude contents in matlab folder
+#exclude the following contents
+#all scripts in matlab
 matlab/*
-#data/*
+#parametric values for generating trajectories
+coefficients.txt
+coefficients.yaml
+#build files
+build/*
+#previous data stored for plotting
+all_data/*
