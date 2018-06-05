@@ -5,7 +5,8 @@ project(onlineControl)
 find_package(DART 6.2.0 REQUIRED COMPONENTS utils-urdf gui CONFIG)
 
 #add_compile_options(-std=c++11)
-add_compile_options(-std=c++11 -DEIGEN_STACK_ALLOCATION_LIMIT=0)
+#add_compile_options(-std=c++11 -DEIGEN_STACK_ALLOCATION_LIMIT=0)
+add_compile_options(-std=c++11 -DEIGEN_STACK_ALLOCATION_LIMIT=0 -Ofast)
 
 include_directories(${DART_INCLUDE_DIRS})
 

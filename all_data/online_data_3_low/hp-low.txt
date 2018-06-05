@@ -1,0 +1,21 @@
+Function evaluation      0;  Value 1.691609e+03
+Function evaluation     13;  Value -1.506284e+04
+Function evaluation     16;  Value -1.540498e+04
+Function evaluation     18;  Value -1.562158e+04
+Function evaluation     21;  Value -1.576997e+04
+Function evaluation     25;  Value -1.579699e+04
+Function evaluation     28;  Value -1.589830e+04
+Function evaluation     31;  Value -1.589891e+04
+Function evaluation     35;  Value -1.589940e+04
+Function evaluation     37;  Value -1.589958e+04
+Function evaluation     39;  Value -1.589971e+04
+Function evaluation     41;  Value -1.589971e+04
+Function evaluation     43;  Value -1.589971e+04
+
+nMSE
+    0.0003    0.0006    0.0012    0.0007    0.0032    0.0002    0.0008
+
+Hyperparameters
+    mean: []
+     cov: [1.8618 2.6217]
+     lik: -2.6297

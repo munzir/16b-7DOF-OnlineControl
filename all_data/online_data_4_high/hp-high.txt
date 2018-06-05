@@ -1,0 +1,29 @@
+Function evaluation      0;  Value 7.429112e+04
+Function evaluation     13;  Value 8.022984e+03
+Function evaluation     21;  Value -2.407324e+04
+Function evaluation     24;  Value -2.730865e+04
+Function evaluation     28;  Value -2.940363e+04
+Function evaluation     31;  Value -2.969367e+04
+Function evaluation     34;  Value -2.975908e+04
+Function evaluation     37;  Value -2.979074e+04
+Function evaluation     40;  Value -2.979362e+04
+Function evaluation     42;  Value -2.979475e+04
+Function evaluation     44;  Value -2.979475e+04
+Function evaluation     47;  Value -2.979476e+04
+Function evaluation     49;  Value -2.979477e+04
+Function evaluation     51;  Value -2.979477e+04
+Function evaluation     54;  Value -2.979477e+04
+Function evaluation     56;  Value -2.979477e+04
+Function evaluation     58;  Value -2.979477e+04
+Function evaluation     60;  Value -2.979477e+04
+Function evaluation     62;  Value -2.979477e+04
+
+calculated hyperparameters using optimizing marginal likelihood
+calculated hyperparameters
+nMSE
+    0.0003    0.0005    0.0011    0.0005    0.0024    0.0003    0.0007
+
+Hyperparameters
+    mean: []
+     cov: [0.4065 3.2924]
+     lik: -3.8915
