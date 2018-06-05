@@ -1,3 +1,0 @@
-/home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles/edit_cache.dir
-/home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles/rebuild_cache.dir
-/home/mouhyemen/desktop/research/KrangDart/OnlineControl/build/CMakeFiles/onlineControl.dir
